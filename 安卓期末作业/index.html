@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<style>
+			#index #contend li{
+				list-style:none;
+			}
+			#index #contend .listDiv{
+				width: 5%;
+				height: 42px;
+				background-color: #2d268e;
+				margin-top: 8px;
+				margin-left: -18px;
+				border-radius: 12px 12px;
+				text-align: center;
+				padding-top: 9px;
+				position: absolute;
+				display: none;
+			}
+			
+			#index #contend .listDiv span{
+				color: white;
+				font-size: 26px;
+				height: 26px;
+			}
+			#footButton{
+				height: 68px;
+				width: 68px;
+				background-color: #FF5053;
+				border-radius: 50% 50%;
+				float: right;
+				margin-right: 5px;
+			}
+			.mui-bar{
+				background: none;
+				outline: none;
+				-webkit-box-shadow: none;
+				margin-bottom: 34px;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="index">
+			<div id="contend">
+				<ul>
+					<li>
+						<div class="listDiv" id="div_1">
+							<span>1</span>
+						</div>
+					</li>
+					<li>
+						<div class="listDiv" id="div_2">
+							<span>2</span>
+						</div>
+					</li>
+					<li>
+						<div class="listDiv" id="div_3">
+							<span>3</span>
+						</div>
+					</li>
+					<li>
+						<div class="listDiv" id="div_4">
+							<span>4</span>
+						</div>
+					</li>
+					<li>
+						<div class="listDiv" id="div_5">
+							<span>5</span>
+						</div>
+					</li>
+				</ul>
+			</div>
+			<footer class="mui-bar mui-bar-footer">
+				<button id="footButton"></button>
+			</footer>
+		</div>
+	</body>
+	<script src="js/mui.min.js"></script>
+	<script src="js/jquery-3.3.1.min.js"></script>
+	<script type="text/javascript" charset="utf-8">
+		mui.init({
+			gestureConfig: {
+				tap: true, //默认为true
+				doubletap: false, //默认为false
+				longtap: false, //默认为false
+				swipe: false, //默认为true
+				drag: false, //默认为true
+				hold: true, //默认为false，不监听
+				release: false //默认为false，不监听
+			}
+		});
+
+		var btn = document.getElementById("footButton");
+		btn.addEventListener("tap", function() {
+			buttonClick();
+		});
+		btn.addEventListener("hold", function() {
+			buttonClick();
+		});
+
+		var animationTime = 1000;//动画时长
+		var divNum = 5;//div的数量该值要小于或等于所建div数量
+		var index1 = 0;
+		var index2 = 0;
+		var btn_even_flag = true; //控制只识别第一次按钮事件处理
+		var show_flag = false; //显示还是隐藏标志位
+		var startLeft = '28px';
+		var startTop = 50; //设置间隔
+		var endLeft = $("#footButton").offset().left + 40;//获取按钮的横坐标
+		var endTop = $("#footButton").offset().top;//获取按钮的纵坐标
+		var endPosition = {
+			left: endLeft,
+			top: endTop
+		}; //移动结束位置
+		var isFirst = false; //判断是否是第一次运行
+		$(".listDiv").css({
+			'top':endTop,
+			'left':endLeft,
+		});//将所有的div移动到末尾位置
+
+		function buttonClick() {
+			if (btn_even_flag) {
+				if (index1 == divNum) {
+					show_flag = true;
+					index1 = divNum+1;
+					index2 = divNum+1;
+				}
+				if (index1 == 0)//将index2重置为0
+					index2 = 0;
+				btn_even_flag = false;
+				var timeHidden = setInterval(function() {
+					if (show_flag) {
+						index1--;
+						$("#div_" + index1).animate({
+							width: '4%',
+						}, animationTime, function() {
+							index2--;
+							$("#div_" + index2).animate({
+								left: endPosition.left,
+								top: endPosition.top,
+							});
+						});
+					} else {
+						var top;
+						top = startTop * index1;
+						index1++;
+						$("#div_" + index1).toggle();
+						if (isFirst)
+							$("#div_" + index1).toggle();
+						$("#div_" + index1).animate({
+							left: startLeft,
+							top: top,
+						}, animationTime, function() {
+							index2++;
+							$("#div_" + index2).animate({
+								width: '56%',
+							});
+						});
+					}
+					if (show_flag & index1 == 0 || !show_flag & index1 == divNum) {
+						btn_even_flag = true;
+						show_flag = !show_flag;
+						clearInterval(timeHidden);
+						isFirst = true;
+					}
+				}, animationTime-200);
+			}
+		}
+	</script>
+</html>
